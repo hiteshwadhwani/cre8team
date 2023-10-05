@@ -8,28 +8,6 @@ export const dynamic = "force-dynamic";
 
 const Project = async () => {
   const supabase = createServerComponentClient({ cookies });
-
-  // check if the user exist
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // if user does not exist redirect to project page
-  if (!user) {
-    redirect("/projects");
-  }
-
-  // get the user
-  const userProfile = await client.user.findUnique({
-    where: {
-      authId: user.id,
-    },
-  });
-
-  if (!userProfile) {
-    return redirect("/projects");
-  }
-
   // get the user made projects
   const projects = await client.project.findMany({
     include: {
