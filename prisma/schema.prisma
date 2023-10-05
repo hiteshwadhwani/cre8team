@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String      @id @default(uuid())
+  authId           String      @unique
+  email            String      @unique
+  name             String?
+  imageUrl         String?
+  profession       String?
+  about            String?
+  resume           String?
+  profileCompleted Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  applicants       Applicant[]
+  projects         Project[]
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  title        String
+  description  String
+  userId       String
+  applicants   Applicant[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requirements Requirement[]
+  techs        Tech[]
+
+  @@index([userId])
+}
+
+model Tech {
+  id        String  @id @default(uuid())
+  name      String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+}
+
+model Requirement {
+  id        String  @id @default(uuid())
+  text      String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+}
+
+model Applicant {
+  id        String  @id @default(uuid())
+  userId    String
+  projectId String
+  score     Int
+  accepted  Boolean @default(false)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+}
