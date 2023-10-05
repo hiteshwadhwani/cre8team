@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Input } from "./ui/input";
 import { Divide, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -25,14 +24,14 @@ const Navbar = () => {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const { setOpen, isOpen, type } = useModal();
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
   const userData = useUser();
 
-  // Fetch user data when the component mounts
+
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const  user  = supabase.auth; // Access the user data
+        const  user  = supabase.auth; 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -67,7 +66,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-white border border-[#ECECEC] rounded-[20px] px-6 py-4 transition-all">
-      <div className="flex flex-row items-center gap-x-10">
+      <div className="flex flex-row items-center gap-x-1 ">
         <Image
           onClick={() => router.push("/projects")}
           src={"/logo.svg"}
@@ -76,14 +75,17 @@ const Navbar = () => {
           height={40}
           className="cursor-pointer"
         />
-        <div className="hidden md:flex flex-row items-center border border-slate-200 rounded-xl bg-[rgba(250, 250, 250, 0.50)] text-muted-foreground px-2 gap-x-1 flex-1">
-          <Search className="h-4 w-4" />
-          <Input
-            className="focus:outline-none bg-none active:outline-none border-none p-0 w-full"
+        <div className="hidden md:flex flex-row items-center border border-slate-200 rounded-xl bg-[rgba(250, 250, 250, 0.50)] text-muted-foreground px-2 gap-x-1 flex-1 ">
+          <Search className="h-4 w-4 outline-none" />
+          <input
+            className="focus:outline-none bg-none outline-none active:outline-none border-none h-10 w-full  "
             placeholder="search"
+            // style={{ outline: "none !important" }}
             disabled={path === "/about"}
           />
         </div>
+
+        <div className="flex flex-row items-center gap-x-6 mx-2 xl:mr-20 xl:ml-10  ">
         <Link
           className={cn(
             path === "/projects" && "text-[#0671E0]",
@@ -111,7 +113,8 @@ const Navbar = () => {
         >
           About
         </Link>
-        {loading ? ( // Show loader when loading is true
+        </div>
+        {loading ? ( 
           <div className="ml-auto">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-opacity-50"></div>
           </div>

@@ -20,7 +20,7 @@ export default function ProjectCard({
   };
 
   return (
-    <div className="h-[320px] rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
+    <div className="min-h-[320px] h-full rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
       <div>
         <div onClick={onClickProject} className="cursor-pointer">
           <h2 className=" mb-[5px] text-[20px] font-semibold leading-[28px] uppercase">
