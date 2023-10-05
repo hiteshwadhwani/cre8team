@@ -78,10 +78,9 @@ const Navbar = () => {
         <div className="hidden md:flex flex-row items-center border border-slate-200 rounded-xl bg-[rgba(250, 250, 250, 0.50)] text-muted-foreground px-2 gap-x-1 flex-1 ">
           <Search className="h-4 w-4 outline-none" />
           <input
-            className="focus:outline-none bg-none outline-none active:outline-none border-none h-10 w-full  "
+            className={`focus:outline-none bg-none outline-none active:outline-none border-none h-10 w-full  ${path === "/about" ? 'cursor-not-allowed bg-transparent' : ''} `}
             placeholder="search"
-            // style={{ outline: "none !important" }}
-            disabled={path === "/about"}
+            disabled={path === "/about"  }
           />
         </div>
 

@@ -49,7 +49,7 @@ function AboutPage() {
           </div>
 
           {/* right component */}
-          <div className="h-full xl:h-screen md:mx-16 p-16 bg-[#F8FBFF]  ">
+          <div className="h-full xl:h-screen xl:ml-16 p-16 bg-[#F8FBFF] xl:rounded-r-3xl ">
             {/* icons */}
 
             <div className="flex flex-row space-x-5 mt-16 text-center justify-center ">

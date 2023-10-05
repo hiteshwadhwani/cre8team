@@ -11,14 +11,14 @@ export default function Card({
 }) {
   const { setOpen } = useDashboardPageCard();
 
-  // Truncate description to 40 words and add "..." if it's longer
+  
   const truncatedDescription =
     project.description.length > 300
       ? project.description.slice(0, 300) + "..."
       : project.description;
 
   return (
-    <div className="rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col h-[320px]">
+    <div className="rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col h-[320px] max-w-xl">
       {/* Title */}
       <h2 className="text-[20px] font-semibold leading-[28px] cursor-pointer uppercase">
         {project.title}
@@ -46,7 +46,7 @@ export default function Card({
         onClick={() => {
           setOpen(project);
         }}
-        className="text-white bg-[#014DA1] text-[12px] font-semibold hover:bg-[#014DA1] mt-auto hover:opacity-80 transition mt-4"
+        className="text-white bg-[#014DA1] text-[12px] font-semibold hover:bg-[#014DA1] hover:opacity-80 transition mt-4 max-w-xl"
       >
         View Applicants
       </Button>
