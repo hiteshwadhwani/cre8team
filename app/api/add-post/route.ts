@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ msg: "done" }, { status: 200 });
   } catch (error) {
-    console.log("add-post POST ROUTE", error);
+    
     return new NextResponse("Internal server error", { status: 500 });
   }
 }

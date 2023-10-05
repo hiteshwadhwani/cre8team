@@ -66,7 +66,7 @@ const AddPost = () => {
       toast.success('post created')
     }
     catch(error){
-      console.log(error)
+     
       toast.error("something went wrong")
     }
     finally{

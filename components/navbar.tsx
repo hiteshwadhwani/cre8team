@@ -47,11 +47,11 @@ const Navbar = () => {
       }
     }
   };
-  console.log({
-    profile: userData?.profile,
-    user: userData?.user,
-    session: userData?.session,
-  });
+  // console.log({
+  //   profile: userData?.profile,
+  //   user: userData?.user,
+  //   session: userData?.session,
+  // });
   return (
     <div className="bg-white border border-[#ECECEC] rounded-[20px] px-6 py-4 transition-all">
       <div className="flex flex-row items-center gap-x-10">
