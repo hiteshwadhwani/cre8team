@@ -1,10 +1,9 @@
-"use client";
-
-import { useProjectPageCard } from "@/hooks/use-card";
+import React from "react";
 import Modal from "@/components/ui/modal";
-import { Dot, Frown } from "lucide-react";
+import { Dot } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useProjectPageCard } from "@/hooks/use-card";
 
 const ProjctDescription = () => {
   const { isOpen, data, setClose } = useProjectPageCard();
@@ -12,8 +11,9 @@ const ProjctDescription = () => {
     <Modal title="Project Details" isOpen={isOpen} onClose={setClose}>
       <div className="flex flex-col gap-y-4">
         <h2 className="text-[20px] font-semibold uppercase">{data?.title}</h2>
-        <div>
+       
           <h4 className="text-[12px] uppercase mb-1">description</h4>
+          <div className="max-h-80 overflow-y-auto"> 
           <p className="text-[#747474] leading-[28px] text-[14px]">
             {data?.description}
           </p>

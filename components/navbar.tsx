@@ -1,13 +1,11 @@
-"use client";
-
+"use client"
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Input } from "./ui/input";
 import { Divide, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useContext } from "react";
-// import { UserContext } from "@/hooks/userUser";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -22,11 +20,30 @@ import { useRouter } from "next/navigation";
 import useModal from "@/hooks/use-modal";
 import { useUser } from "@/hooks/use-user";
 
+
 const Navbar = () => {
   const router = useRouter();
   const supabase = createClientComponentClient();
-  const userData = useUser();
   const { setOpen, isOpen, type } = useModal();
+  const [loading, setLoading] = useState(true); // Add loading state
+  const userData = useUser();
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const  user  = supabase.auth; // Access the user data
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchUserData();
+  }, []);
+
+
   const SignOut = async () => {
     const { error } = await supabase.auth.signOut();
     router.refresh();
@@ -36,7 +53,7 @@ const Navbar = () => {
       toast.success("Logged out");
     }
   };
-  //   const userData = useContext(UserContext);
+
   const path = usePathname();
   const onClickDashboard = () => {
     if (userData?.user) {
@@ -47,11 +64,7 @@ const Navbar = () => {
       }
     }
   };
-  // console.log({
-  //   profile: userData?.profile,
-  //   user: userData?.user,
-  //   session: userData?.session,
-  // });
+
   return (
     <div className="bg-white border border-[#ECECEC] rounded-[20px] px-6 py-4 transition-all">
       <div className="flex flex-row items-center gap-x-10">
@@ -98,50 +111,58 @@ const Navbar = () => {
         >
           About
         </Link>
-        {userData?.profile ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger className="z-10 ml-auto" asChild>
-              <div className="rounded-full w-[50px] h-[50px] hover:cursor-pointer relative">
-                <Image
-                  src={userData.profile?.imageUrl || "/public/user.png"}
-                  alt="avatar"
-                  fill
-                  className="rounded-full object-cover"
-                />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" className="space-y-2 p-2">
-              <DropdownMenuItem className="cursor-pointer" onClick={() => setOpen('profile-modal')}>
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="md:hidden" />
-              <DropdownMenuItem className="md:hidden cursor-pointer">
-                <Link href={"/projects"}>Project</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="md:hidden cursor-pointer">
-                <Link href={"/dashboard"}>Dashboard</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="md:hidden cursor-pointer">
-                <Link href={"/about"}>About</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="md:hidden" />
-              <DropdownMenuItem
-                onClick={() => SignOut()}
-                className="cursor-pointer"
-              >
-                <p className="text-rose-600">Logout</p>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <div>
-            <Button
-              onClick={() => setOpen("auth-modal")}
-              className="bg-[#0671E0] text-white ml-auto"
-            >
-              Login
-            </Button>
+        {loading ? ( // Show loader when loading is true
+          <div className="ml-auto">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-opacity-50"></div>
           </div>
+        ) : (
+          <>
+            {userData?.profile ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="z-10 ml-auto" asChild>
+                  <div className="rounded-full w-[50px] h-[50px] hover:cursor-pointer relative">
+                    <Image
+                      src={userData.profile?.imageUrl || "/public/user.png"}
+                      alt="avatar"
+                      fill
+                      className="rounded-full object-cover"
+                    />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" className="space-y-2 p-2">
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => setOpen('profile-modal')}>
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="md:hidden" />
+                  <DropdownMenuItem className="md:hidden cursor-pointer">
+                    <Link href={"/projects"}>Project</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="md:hidden cursor-pointer">
+                    <Link href={"/dashboard"}>Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="md:hidden cursor-pointer">
+                    <Link href={"/about"}>About</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="md:hidden" />
+                  <DropdownMenuItem
+                    onClick={() => SignOut()}
+                    className="cursor-pointer"
+                  >
+                    <p className="text-rose-600">Logout</p>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div>
+                <Button
+                  onClick={() => setOpen("auth-modal")}
+                  className="bg-[#0671E0] text-white ml-auto"
+                >
+                  Login
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
