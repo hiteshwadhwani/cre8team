@@ -34,7 +34,7 @@ export default function ProjectCard({
         </div>
       </div>
       <div>
-        <div className="flex flex-row gap-x-[10px]">
+        <div className="flex flex-row gap-[10px] flex-wrap m-1">
           {project.techs.map((tech) => (
             <div
               key={tech.id}

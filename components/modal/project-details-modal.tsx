@@ -24,9 +24,11 @@ const ProjectDetails = () => {
         <h2 className="text-[20px] font-semibold uppercase">{data?.title}</h2>
         <div>
           <h4 className="text-[12px] uppercase mb-1">description</h4>
-          <p className="text-[#747474] leading-[28px] text-[14px]">
+          <div className=""> 
+          <p className="text-[#747474] leading-[28px] text-[14px] ">
             {data?.description}
           </p>
+          </div>
         </div>
         <div>
           <h4 className="text-[12px] uppercase mb-1">requirements</h4>

@@ -13,11 +13,11 @@ const ProjctDescription = () => {
         <h2 className="text-[20px] font-semibold uppercase">{data?.title}</h2>
        
           <h4 className="text-[12px] uppercase mb-1">description</h4>
-          <div className="max-h-80 overflow-y-auto"> 
+        
           <p className="text-[#747474] leading-[28px] text-[14px]">
             {data?.description}
           </p>
-        </div>
+       
         <div>
           <h4 className="text-[12px] uppercase mb-1">requirements</h4>
           <ul>
@@ -36,7 +36,7 @@ const ProjctDescription = () => {
           {data?.techs.map((tech) => (
             <div
               key={tech.id}
-              className="px-[10px] py-[5px] text-[#49A8FF] rounded-[50px] bg-[#49A8FF21] text-[12px] font-medium"
+              className="px-[10px] py-[5px] text-[#49A8FF] rounded-[50px] bg-[#49A8FF21] text-[12px] font-medium flex flex-wrap"
             >
               {tech.name}
             </div>
@@ -53,7 +53,7 @@ const ProjctDescription = () => {
             />
             <p className="text-[16px] font-semibold">{data?.user.name}</p>
           </div>
-          <Button className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition">
+          <Button className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition mr-2">
             Interested
           </Button>
         </div>
