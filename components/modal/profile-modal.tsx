@@ -30,6 +30,7 @@ const ProfilePage = () => {
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-600 ">
               Email
+              {/* asddfs */}
             </label>
             <input
               type="email"
