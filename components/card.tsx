@@ -30,7 +30,7 @@ export default function Card({
       </p>
 
       {/* Technologies */}
-      <div className="flex flex-wrap gap-x-2 gap-y-1 mt-2">
+      <div className="flex gap-x-2 gap-y-1 mt-2 flex-wrap">
         {project.techs.map((tech) => (
           <div
             key={tech.id}

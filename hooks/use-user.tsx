@@ -9,6 +9,7 @@ type userContextType = {
   profile: User | null;
   session: Session | null;
   user: SupaUser | null;
+  loading: boolean
 };
 
 export const UserContext = createContext<userContextType | undefined>(
@@ -21,10 +22,12 @@ export interface Props {
 
 export const UserContextProvider = (props: Props) => {
   const supabase = createClientComponentClient();
+  const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<SupaUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<User | null>(null);
   useEffect(() => {
+    setLoading(true)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         setSession(session);
@@ -40,6 +43,7 @@ export const UserContextProvider = (props: Props) => {
           setProfile(res.data);
         }
       }
+      setLoading(false)
     });
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT") {
@@ -62,9 +66,10 @@ export const UserContextProvider = (props: Props) => {
           setUser(null);
         }
       }
+      setLoading(false)
     });
   }, [supabase.auth]);
-  const value = { user, session, profile };
+  const value = { user, session, profile, loading};
   return <UserContext.Provider value={value} {...props} />;
 };
 

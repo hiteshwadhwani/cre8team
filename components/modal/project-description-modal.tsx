@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 const ProjctDescription = () => {
   const { isOpen, data, setClose } = useProjectPageCard();
   return (
-    <Modal title="Project Details" isOpen={isOpen} onClose={setClose}>
+    <Modal className="max-h-[500px] overflow-y-auto max-w-fit" title="Project Details" isOpen={isOpen} onClose={setClose}>
       <div className="flex flex-col gap-y-4">
         <h2 className="text-[20px] font-semibold uppercase">{data?.title}</h2>
         <div>
@@ -32,7 +32,7 @@ const ProjctDescription = () => {
             ))}
           </ul>
         </div>
-        <div className="flex flex-row gap-x-[10px]">
+        <div className="flex flex-row gap-x-[10px] flex-wrap">
           {data?.techs.map((tech) => (
             <div
               key={tech.id}

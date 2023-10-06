@@ -6,10 +6,38 @@ import ProjectClient from "./project-client";
 
 export const dynamic = "force-dynamic";
 
-const Project = async () => {
-  const supabase = createServerComponentClient({ cookies });
+interface SearchProps{
+  searchParams: {
+    search: string
+  }
+}
+
+const Project = async ({searchParams}: SearchProps) => {
   // get the user made projects
   const projects = await client.project.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            contains: searchParams.search
+          }
+        },
+        {
+          description: {
+            contains: searchParams.search
+          }
+        },
+        {
+          techs: {
+            some: {
+              name: {
+                contains: searchParams.search
+              }
+            }
+          }
+        }
+      ],
+    },
     include: {
       requirements: true,
       techs: true,

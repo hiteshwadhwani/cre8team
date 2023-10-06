@@ -20,7 +20,7 @@ export default function ProjectCard({
   };
 
   return (
-    <div className="h-[320px] rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
+    <div className="min-h-[320px] rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
       <div>
         <div onClick={onClickProject} className="cursor-pointer">
           <h2 className=" mb-[5px] text-[20px] font-semibold leading-[28px] uppercase">
@@ -34,7 +34,7 @@ export default function ProjectCard({
         </div>
       </div>
       <div>
-        <div className="flex flex-row gap-x-[10px]">
+        <div className="flex gap-x-2 gap-y-1 mt-2 flex-wrap">
           {project.techs.map((tech) => (
             <div
               key={tech.id}
