@@ -20,30 +20,32 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Rocket } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import {BeatLoader} from 'react-spinners'
 
 const MAX_SIZE_MB = 1;
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  imageUrl: z.custom<FileList>((val) => val instanceof FileList, "Required")
-  .transform((file) => file.length > 0 && file.item(0))
-  .refine(
-    (file) => !file || (!!file && file.size <= MAX_SIZE_MB * 1024 * 1024),
-    {
-      message: `The profile picture must be a maximum of ${MAX_SIZE_MB}MB.`,
-    }
-  ),
-  profession: z.string().min(1),
-  about: z.string().min(1),
-  resume: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
-    .transform((file) => file.length > 0 && file.item(0))
+  name: z.string().optional(),
+  imageUrl: z
+    .custom<FileList>()
+    .optional()
+    .transform((file) => file && file.length > 0 && file.item(0))
     .refine(
       (file) => !file || (!!file && file.size <= MAX_SIZE_MB * 1024 * 1024),
       {
         message: `The profile picture must be a maximum of ${MAX_SIZE_MB}MB.`,
       }
-    )
+    ),
+  profession: z.string().optional(),
+  about: z.string().optional(),
+  resume: z
+    .custom<FileList>()
+    .optional()
+    .transform((file) => file && file.length > 0 && file.item(0))
     .refine(
       (file) => !file || (!!file && file.type?.startsWith("application/pdf")),
       {
@@ -53,10 +55,11 @@ const formSchema = z.object({
 });
 
 const ProfilePage = () => {
+  const router = useRouter();
   const supabase = createClientComponentClient();
   const { isOpen, type, setClose } = useModal();
-  const [file, setFile] = useState<FileList | null>();
   const userData = useUser();
+  const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,12 +70,41 @@ const ProfilePage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    //steps
-    //setup cloudinary
-    //save files to the cloudinary
-    //save data to db
-    const bucket = "resume";
-    console.log(values);
+    try {
+      setLoading(true)
+      let formData: any = {
+        name: values?.name,
+        about: values?.about,
+        profession: values?.profession,
+      };
+      if (values.imageUrl) {
+        const file_name = uuidv4();
+        await supabase.storage
+          .from("profile photo")
+          .upload(file_name, values.imageUrl);
+        const { data } = supabase.storage
+          .from("profile photo")
+          .getPublicUrl(file_name);
+        formData = { ...formData, imageUrl: data.publicUrl };
+      }
+      if (values.resume) {
+        const fileName = uuidv4();
+        const data = await supabase.storage
+          .from("resume")
+          .upload(fileName, values.resume);
+        formData = { ...formData, resume: data.data?.path };
+      }
+
+      const res = await axios.post("/api/update-user", formData);
+      toast.success("profile updated");
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    } finally {
+      setLoading(false)
+      setClose();
+    }
   };
 
   return (
@@ -90,7 +122,11 @@ const ProfilePage = () => {
               <FormItem>
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your full name" {...field} />
+                  <Input
+                    placeholder="Enter your full name"
+                    disabled={loading}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -103,7 +139,11 @@ const ProfilePage = () => {
               <FormItem>
                 <FormLabel>Profession</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your profession" {...field} />
+                  <Input
+                    placeholder="Enter your profession"
+                    disabled={loading}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,6 +158,7 @@ const ProfilePage = () => {
                 <FormControl>
                   <Textarea
                     placeholder="Tell us a little about yourself..."
+                    disabled={loading}
                     {...field}
                   />
                 </FormControl>
@@ -128,7 +169,7 @@ const ProfilePage = () => {
           <FormField
             control={form.control}
             name="imageUrl"
-            render={({ field: {onChange}, ...field }) => (
+            render={({ field: { onChange }, ...field }) => (
               <FormItem>
                 <FormLabel>Change your profile photo</FormLabel>
                 <FormControl>
@@ -138,6 +179,7 @@ const ProfilePage = () => {
                     type="file"
                     {...field}
                     onChange={(e) => onChange(e.target.files)}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -157,13 +199,15 @@ const ProfilePage = () => {
                     type="file"
                     {...field}
                     onChange={(e) => onChange(e.target.files)}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">
+
+          <Button type="submit" disabled={loading}>
             Lets Go <Rocket className="ml-1 h-4 w-4" />
           </Button>
         </form>

@@ -6,18 +6,32 @@ import React from "react";
 import { Button } from "./ui/button";
 import { useProjectPageCard } from "@/hooks/use-card";
 import Image from "next/image";
+import { useUser } from "@/hooks/use-user";
+import toast from "react-hot-toast";
 
 export default function ProjectCard({
   project,
 }: {
   project: ProjectWithUserWithRequirementsWithTech;
 }) {
+  const userData = useUser()
   const { setOpen, isOpen } = useProjectPageCard();
   const onClickProject = () => {
     if (!isOpen) {
       setOpen(project);
     }
   };
+  const onClickInterested = () => {
+    if(!userData?.session){
+      toast.error('login to continue')
+    }
+    else if(userData.profile && !userData.profile.profileCompleted){
+      toast.error('complete your profile to apply')
+    }
+    else{
+      toast.success('applied')
+    }
+  }
 
   return (
     <div className="min-h-[320px] rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
@@ -55,7 +69,7 @@ export default function ProjectCard({
             />
             <p className="text-[16px] font-semibold">{project.user.name}</p>
           </div>
-          <Button className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition">
+          <Button disabled={userData?.loading} onClick={onClickInterested} className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition">
             Interested
           </Button>
         </div>
