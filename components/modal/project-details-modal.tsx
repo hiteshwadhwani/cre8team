@@ -4,18 +4,39 @@ import {useDashboardPageCard} from "@/hooks/use-card";
 import Modal from "@/components/ui/modal";
 import { Dot, Frown } from "lucide-react";
 import ApplicantListItem from "../applicant-list-item";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const ProjectDetails = () => {
+  const router = useRouter()
   const { isOpen, data, setClose } = useDashboardPageCard();
   const NoApplicants = () => (
     <p className="text-[#747474] leading-[28px] text-[14px] text-center flex items-center flex-row">
         No Applicants <Frown className="h-4 w-4 ml-1" />
     </p>
   )
+
+  const onClickAccepted = async (applicant_id: string) => {
+    try{
+      const res = await axios.post("/api/accept-user", {
+        project_id: data?.id,
+        applicant_id: applicant_id
+      })
+      toast.success("user accepted")
+      router.refresh()
+    }
+    catch(error){
+      console.log(error)
+      toast.error("Something went wrong")
+    }
+      
+
+  }
   const ShowApplicants = () => (
     <div>
         {data?.applicants.map((item) => (
-            <ApplicantListItem key={item.id} applicant={item} onClickAccepted={() => {}} />
+            <ApplicantListItem key={item.id} applicant={item} onClickAccepted={onClickAccepted} />
           ))}
     </div>
   )
