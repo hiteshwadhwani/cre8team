@@ -3,6 +3,7 @@
 import {useDashboardPageCard} from "@/hooks/use-card";
 import Modal from "@/components/ui/modal";
 import { Dot, Frown } from "lucide-react";
+import ApplicantListItem from "../applicant-list-item";
 
 const ProjectDetails = () => {
   const { isOpen, data, setClose } = useDashboardPageCard();
@@ -14,12 +15,12 @@ const ProjectDetails = () => {
   const ShowApplicants = () => (
     <div>
         {data?.applicants.map((item) => (
-            <div key={item.id}>{item.accepted}</div>
+            <ApplicantListItem key={item.id} applicant={item} onClickAccepted={() => {}} />
           ))}
     </div>
   )
   return (
-    <Modal title="Project Details" isOpen={isOpen} onClose={setClose}>
+    <Modal title="Project Details" className="max-h-[500px] overflow-y-auto max-w-fit" isOpen={isOpen} onClose={setClose}>
       <div className="flex flex-col gap-y-4">
         <h2 className="text-[20px] font-semibold uppercase">{data?.title}</h2>
         <div>

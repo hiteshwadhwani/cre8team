@@ -26,7 +26,8 @@ export async function POST(req: Request) {
       !!updatedUser.name &&
       !!updatedUser.about &&
       !!updatedUser.profession &&
-      !!updatedUser.resume;
+      !!updatedUser.resume &&
+      !!updatedUser.resume_text
 
     // check if the profile is completed
     if (!updatedUser.profileCompleted && profileCompleted) {

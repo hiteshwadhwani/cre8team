@@ -74,7 +74,11 @@ const Dashboard = async ({ searchParams }: SearchProps) => {
       ],
     },
     include: {
-      applicants: true,
+      applicants: {
+        include: {
+          user: true
+        }
+      },
       requirements: true,
       techs: true,
     },

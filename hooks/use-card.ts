@@ -1,4 +1,4 @@
-import { ProjectWithApplicantsWithRequirementsWithTech, ProjectWithUserWithRequirementsWithTech } from '@/type'
+import { ProjectWithApplicantsWithRequirementsWithTech, ProjectWithUserWithRequirementsWithTechWithApplicants } from '@/type'
 import {create} from 'zustand'
 
 interface useDashboardPageCard{
@@ -11,8 +11,8 @@ interface useDashboardPageCard{
 interface useProjectPageCard{
     isOpen: boolean
     setClose: () => void
-    setOpen: (data: ProjectWithUserWithRequirementsWithTech) => void
-    data: ProjectWithUserWithRequirementsWithTech | null
+    setOpen: (data: ProjectWithUserWithRequirementsWithTechWithApplicants) => void
+    data: ProjectWithUserWithRequirementsWithTechWithApplicants | null
 }
 
 export const useDashboardPageCard = create<useDashboardPageCard>((set) => ({

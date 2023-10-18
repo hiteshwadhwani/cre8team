@@ -1,37 +1,53 @@
 import {
   ProjectWithApplicantsWithRequirementsWithTech,
-  ProjectWithUserWithRequirementsWithTech,
+  ProjectWithUserWithRequirementsWithTechWithApplicants,
 } from "@/type";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { useProjectPageCard } from "@/hooks/use-card";
 import Image from "next/image";
 import { useUser } from "@/hooks/use-user";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function ProjectCard({
   project,
 }: {
-  project: ProjectWithUserWithRequirementsWithTech;
+  project: ProjectWithUserWithRequirementsWithTechWithApplicants;
 }) {
-  const userData = useUser()
+  const [loading, setLoading] = useState(false);
+  const userData = useUser();
+  const router = useRouter();
+  const userAppliedStatus = project.applicants.find(
+    (applicant) => applicant.userId === userData?.profile?.id
+  );
   const { setOpen, isOpen } = useProjectPageCard();
   const onClickProject = () => {
     if (!isOpen) {
       setOpen(project);
     }
   };
-  const onClickInterested = () => {
-    if(!userData?.session){
-      toast.error('login to continue')
+  const onClickInterested = async () => {
+    if (!userData?.session) {
+      toast.error("login to continue");
+    } else if (userData.profile && !userData.profile.profileCompleted) {
+      toast.error("complete your profile to apply");
+    } else {
+      // apply to project
+      try {
+        setLoading(true);
+        await axios.post("/api/apply-project", { project_id: project.id });
+        toast.success("Awesome");
+        router.refresh();
+      } catch (error) {
+        console.log(error);
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
     }
-    else if(userData.profile && !userData.profile.profileCompleted){
-      toast.error('complete your profile to apply')
-    }
-    else{
-      toast.success('applied')
-    }
-  }
+  };
 
   return (
     <div className="min-h-[320px] rounded-[20px] border border-[#ECECEC] hover:bg-[#F4FAFF] transition py-6 px-5 flex flex-col gap-y-2 justify-between">
@@ -69,7 +85,11 @@ export default function ProjectCard({
             />
             <p className="text-[16px] font-semibold">{project.user.name}</p>
           </div>
-          <Button disabled={userData?.loading} onClick={onClickInterested} className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition">
+          <Button
+            disabled={userData?.loading || !!userAppliedStatus || loading}
+            onClick={onClickInterested}
+            className="text-white bg-[#014DA1] text-[16px] font-semibold hover:bg-[#014DA1] w-[149px] h-full hover:opacity-80 transition"
+          >
             Interested
           </Button>
         </div>

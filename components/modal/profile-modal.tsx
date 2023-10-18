@@ -24,7 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {BeatLoader} from 'react-spinners'
+import { BeatLoader } from "react-spinners";
 
 const MAX_SIZE_MB = 1;
 
@@ -59,7 +59,7 @@ const ProfilePage = () => {
   const supabase = createClientComponentClient();
   const { isOpen, type, setClose } = useModal();
   const userData = useUser();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,7 +71,7 @@ const ProfilePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setLoading(true)
+      setLoading(true);
       let formData: any = {
         name: values?.name,
         about: values?.about,
@@ -93,6 +93,24 @@ const ProfilePage = () => {
           .from("resume")
           .upload(fileName, values.resume);
         formData = { ...formData, resume: data.data?.path };
+
+        // create public url
+        const signedUrl = await supabase.storage
+          .from("resume")
+          .createSignedUrl(data.data?.path!, 60 * 15);
+
+        console.log("signed url", signedUrl.data?.signedUrl)
+
+        const resumeText = await axios.post(
+          "https://resparser-main.onrender.com",
+          { pdf_url: signedUrl.data?.signedUrl },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        formData = { ...formData, resume_text: resumeText.data.text };
       }
 
       const res = await axios.post("/api/update-user", formData);
@@ -102,7 +120,7 @@ const ProfilePage = () => {
       console.log(error);
       toast.error("something went wrong");
     } finally {
-      setLoading(false)
+      setLoading(false);
       setClose();
     }
   };

@@ -35,15 +35,17 @@ const Project = async ({searchParams}: SearchProps) => {
               }
             }
           }
-        }
+        },
       ],
     },
     include: {
       requirements: true,
       techs: true,
       user: true,
+      applicants: true
     },
   });
+
   return <ProjectClient projects={projects}/>;
 };
 export default Project;

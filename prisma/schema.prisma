@@ -16,6 +16,7 @@ model User {
   profession       String?
   about            String?
   resume           String?
+  resume_text      String?
   profileCompleted Boolean     @default(false)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
@@ -58,7 +59,7 @@ model Applicant {
   id        String  @id @default(uuid())
   userId    String
   projectId String
-  score     Int
+  score     Float   @db.DoublePrecision
   accepted  Boolean @default(false)
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
